@@ -31,11 +31,11 @@ size_t mem_count = 0;
 
 void toggle_debug_mode() {
     if(debug_mode == 0) { 
-        debug_mode = 1
+        debug_mode = 1;
         fprintf(stderr, "Debug flag now on\n");
     }
     else{
-        debug_mode = 1;
+        debug_mode = 0;
         fprintf(stderr, "Debug flag now off\n");
     }
     
@@ -43,13 +43,57 @@ void toggle_debug_mode() {
 
 }
 
+/*
+Set File Name queries the user for a file name, 
+and stores it in file_name. 
+You may assume that the file name is no longer than 100 characters.
+ If debug mode is on, the function should also print (to stderr, as are all debug messages):
+  "Debug: file name set to 'file_name' " (obviously, replacing 'file_name' with the actual name).
+*/
+
 void set_file_name() {
-
+    fprintf(stdout, "Enter File Name\n");
+    if(fgets(file_name, sizeof(file_name), stdin) != NULL){
+        //getting rid of \n charcter by replacing it in null:
+        int len = strlen(file_name);
+        if (len > 0 && file_name[len - 1] == '\n') {
+            file_name[len - 1] = '\0'; 
+        }
+        if(debug_mode){
+        fprintf(stderr,"Debug: file name set to:%s",file_name);
+        }
+    }
 }
 
+/*
+Set Unit Size option sets the size variable. The steps are:
+Prompt the user for a number.
+If the value is valid (1, 2, or 4), set the size variable accordingly.
+If debug mode is on, print "Debug: set size to x", with x the appropriate size.
+If not valid, print an error message and leave unit_size unchanged.
+*/
 void set_unit_size() {
-
+    char buffer[50];
+    int temp_size;
+    fprintf(stdout, "Enter Unit Size:\n");
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        //lloking for the num in the buffer which is the user input and put it in temp_size
+        sscanf(buffer, "%d", &temp_size); 
+        //. Size can be either 1, 2 or 4, with 1 as the default.
+        if (temp_size == 1 || temp_size == 2 || temp_size == 4) {
+            unit_size = temp_size;
+            if (debug_mode) {
+                fprintf(stderr, "Debug: set size to %d\n", unit_size);
+            }
+        }
+        else {
+            fprintf(stderr, "Invalid unit size\n"); // 
+        }
+    }
 }
+
+
+
 
 void load_into_memory() {
     printf("Not implemented yet\n");
@@ -97,40 +141,36 @@ struct fun_desc menu1[] = {
 };
 
 void menu(){
-
     while(feof(stdin)==0){//we have more 
-      //When the debug mode is on, you should print the value of the variables: unit_size, file_name, and mem_count, every time just before the menu is printed:
-      if(debug_mode){
-        fprintf(stderr, "Unit size: %d\n", unit_size);
-        fprintf(stderr, "File name: %s\n", file_name);
-        fprintf(stderr, "Mem count: %zu\n", mem_count);
+        //When the debug mode is on, you should print the value of the variables: unit_size, file_name, and mem_count, every time just before the menu is printed:
+        if(debug_mode){
+            fprintf(stderr, "Unit size: %d\n", unit_size);
+            fprintf(stderr, "File name: %s\n", file_name);
+            fprintf(stderr, "Mem count: %zu\n", mem_count);
         }
-      fprintf(stdout,"Choose action:\n");
-      int idx=0;
-      }
-      while(menu1[idx].fun!=NULL){
-          printf("%s\n",menu1[idx].name);
-          idx++;
-      }
-      
-      //code taken from tutorialsPoint:
-      char buffer[50]; //array of chars
-      fgets(buffer, sizeof(buffer), stdin);
-      //end of taken code
-      int isError = 1;
-      for(int i=0;menu1[i].fun!=NULL;i++){
-        if(buffer[0]==menu1[i].index){
-          //call the function
-          menu[i].fun();
-          isError = 0;
+        fprintf(stdout,"Choose action:\n");
+        int idx=0;
+        while(menu1[idx].fun!=NULL){
+            printf("%s\n",menu1[idx].name);
+            idx++;
         }
-      }
-      if(isError==1){
-        printf("function not supported\n");
-      }   
+        //code taken from tutorialsPoint:
+        char buffer[50]; //array of chars
+        fgets(buffer, sizeof(buffer), stdin);
+        //end of taken code
+        int isError = 1;
+        for(int i=0;menu1[i].fun!=NULL;i++){
+            if(buffer[0]==menu1[i].index){
+            //call the function
+                menu1[i].fun();
+                isError = 0;
+            }
+        }
+        if(isError==1){
+            printf("function not supported\n");
+        }   
     }      
-   exit(0);
-  
+    exit(0);
 }
 
 
