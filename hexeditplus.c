@@ -22,6 +22,8 @@ char file_name[128] = "";
 int unit_size = 1;
 unsigned char mem_buf[10000];
 size_t mem_count = 0;
+//for 1b: toggle diplay mode
+char display_mode = 0; // 0 for hex(default), 1 for decimal
 
 
 
@@ -94,14 +96,75 @@ void set_unit_size() {
 
 
 
-
 void load_into_memory() {
-    printf("Not implemented yet\n");
+    //check if file name is empty
+    if (strcmp(file_name, "") == 0) {
+        fprintf(stderr, "Error: file name is empty\n");
+        return;
+    }
+
+    //open file for reading
+    FILE *file = fopen(file_name, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error: cannot open file\n");
+        return;
+    }
+
+    //prompt user for location and length
+    char buffer[50];
+    unsigned int location;
+    int length;
+    fprintf(stdout, "Please enter <location> <length>\n");
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        //search input: %x for hex location, %d for decimal length, put it in variables
+        sscanf(buffer, "%x %d", &location, &length);
+        //if debug flag is on, print the file_name, as well as location, and length to stderr.
+        if (debug_mode) {
+            fprintf(stderr, "Debug: file_name=%s, location=%X, length=%d\n", file_name, location, length);
+        }
+
+
+        /*
+        requiremnet: Copy length * unit_size bytes from file_name starting at position location into mem_buf:
+        1.location is user input and tell us where to start our copy, like putting the mouse in the right line of the file
+        2.mem buf is global to save the info we copy
+        unit size is how many bytes each unit, length is how much units,
+        so we need length * unit_size bytes (the system calls needs )
+        */
+        //1.Seek the specified location in the file. seek_set is to start from first byte
+        fseek(file, location, SEEK_SET);
+
+        //NOW WE CAN READ FROM RIGHT PLACE:
+        //2.Read from file directly into mem_buf using fread
+        //fread(where to store, size of each, total numbers of elements, wehre to read from)
+        fread(mem_buf, unit_size, length, file);
+        
+        // Update the global mem_count so we know how many bytes are currently in memory
+        mem_count = length * unit_size; 
+
+        fprintf(stdout, "Loaded %d units into memory\n", length);
+    }
+
+    //close the file!
+    fclose(file);
 }
 
+
+/*
+default is hexa aka 0 aka off
+display mode == 1 aka decimal aka on 
+*/
 void toggle_display_mode() {
-    printf("Not implemented yet\n");
+    if (display_mode == 0) {
+        display_mode = 1;
+        fprintf(stdout, "Decimal display flag now on, decimal representation\n");
+    }
+    else {
+        display_mode = 0;
+        fprintf(stdout, "Decimal display flag now off, hexadecimal representation\n");
+    }
 }
+
 
 void memory_display() {
     printf("Not implemented yet\n");
