@@ -294,9 +294,37 @@ void save_into_file() {
 
 
 
-
+//replaces a unit at location in the memory buffer (not virtual memory address!) with val.
 void memory_modify() {
-    printf("Not implemented yet\n");
+    char buffer[100];
+    unsigned int location; //(memory buffer location, in hexadecimal)
+    unsigned int val; //new val
+    fprintf(stdout, "Please enter <location> <val>\n");
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        //both hexa
+        sscanf(buffer, "%x %x", &location, &val);
+        if (debug_mode) {
+            fprintf(stderr, "Debug: location: %x, val: %x\n", location, val);
+        }
+        if (location + unit_size > 10000) {
+            fprintf(stderr, "Error: location out of bounds\n");
+            return;
+        }
+
+       //ptr to the correct plact in buff according to user location
+        unsigned char* ptr = &mem_buf[location];
+        
+        //casting helps us replace the correct num of values char 1 short 2 int 4
+        if (unit_size == 1) {
+            *((unsigned char*)ptr) = (unsigned char)val;
+        }
+        else if (unit_size == 2) {
+            *((unsigned short*)ptr) = (unsigned short)val;
+        } 
+        else if (unit_size == 4) {
+            *((unsigned int*)ptr) = (unsigned int)val;
+        }
+    }
 }
 
 void quit() {
