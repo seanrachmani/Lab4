@@ -225,9 +225,81 @@ void memory_display() {
 
 
 
+
+
+
+
+
+
 void save_into_file() {
-    printf("Not implemented yet\n");
+    //Check if file name is empty like before
+    if (strcmp(file_name, "") == 0) {
+        fprintf(stderr, "Error: file name is empty\n");
+        return;
+    }
+
+    //open file for reading AND writing ("r+")
+    FILE *file = fopen(file_name, "r+");
+    if (file == NULL) {
+        fprintf(stderr, "Error: cannot open file for writing\n");
+        return;
+    }
+
+    // prompt user for addresses and length
+    char buffer[100];
+    unsigned int source_address; //(source virtual memory address, in hexadecimal) where to start the copy from
+    unsigned int target_location; //target file offset, in hexadecimal) for file name saved. in this file we put other info
+    int length;//(number of units, in decimal).
+    
+    fprintf(stdout, "Please enter <source-address> <target-location> <length>\n");
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        // %x for hex addresses, %d for decimal length
+        sscanf(buffer, "%x %x %d", &source_address, &target_location, &length);
+        
+        //check where we are copying from (just like in memory_display aka special case)
+        unsigned char* ptr;
+        if (source_address == 0) {
+            ptr = mem_buf;
+        } 
+        else {
+            ptr = (unsigned char*)source_address;
+        }
+
+        //If <target-location> is greater than the size of <file_name> you should print an error message and not copy anything.
+        //GO TO THE END TO SEE THE LENTH
+        fseek(file, 0, SEEK_END);
+        long file_size = ftell(file); //ftell is the distance from the start in bytes which is file size
+        
+        if (target_location > file_size) {
+            fprintf(stderr, "Error: target location is strictly greater than file size\n");
+            fclose(file);
+            return; 
+        }
+
+
+
+
+        //we copy from hexeditplus virtual memory(sorce) to file offset(traget with saved file name)
+        //seek the specified target location in the file
+        fseek(file, target_location, SEEK_SET);
+
+        //write to file directly from our pointer using fwrite
+        fwrite(ptr, unit_size, length, file);
+        
+        fprintf(stdout, "Saved %d units into file\n", length);
+    }
+    fclose(file);
 }
+
+
+
+
+
+
+
+
+
+
 
 void memory_modify() {
     printf("Not implemented yet\n");
