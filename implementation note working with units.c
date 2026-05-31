@@ -1,16 +1,10 @@
 void memory_display() {
-    // הגדרת המערכים שהם נתנו לנו
     static char* hex_formats[] = {"%#hhx\n", "%#hx\n", "No such unit", "%#x\n"};
     static char* dec_formats[] = {"%#hhd\n", "%#hd\n", "No such unit", "%#d\n"};
     
-    // המספר הקבוע שהם ביקשו להדפיס כתרגיל
     int val = 0x5555;
-    
     printf("Decimal:\n");
-    // מדפיס עשרוני. אנחנו עושים פחות 1 כי המערך מתחיל מאינדקס 0
     printf(dec_formats[unit_size - 1], val); 
-    
     printf("Hexadecimal:\n");
-    // מדפיס הקסדצימלי באותה צורה
     printf(hex_formats[unit_size - 1], val);
 }
