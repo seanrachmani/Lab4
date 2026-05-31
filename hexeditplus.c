@@ -166,9 +166,64 @@ void toggle_display_mode() {
 }
 
 
+
 void memory_display() {
-    printf("Not implemented yet\n");
+    char buffer[50];
+    unsigned int addr; //offset
+    int u; // length
+
+    fprintf(stdout, "Enter address and length\n");
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        //offset (resp. addr) in hexadecimal x, u will be given in decimal d
+        sscanf(buffer, "%x %d", &addr, &u);
+
+        //taken code from lab instructions(for short choose of print format(1,2,4) )
+        static char* hex_formats[] = {"%#hhx\n", "%#hx\n", "No such unit", "%#x\n"};
+        static char* dec_formats[] = {"%#hhd\n", "%#hd\n", "No such unit", "%#d\n"};
+        //end of taken code
+
+        //output print according to lab example
+        if (display_mode == 1) {
+            fprintf(stdout, "Decimal\n=======\n");
+        } else {
+            fprintf(stdout, "Hexadecimal\n===========\n");
+        }
+
+        
+        unsigned char* ptr;
+        if (addr == 0) {
+            //Entering a value of 0 for addr is a special case, in which the memory to be displayed starts at the beginning of your mem_bu
+            ptr = mem_buf;
+        }
+        else {
+            ///user input
+            ptr = (unsigned char*)addr;
+        }
+
+        //displays u units of size unit_size starting at a given address addr in memory.
+        for (int i = 0; i < u; i++) {
+            //taken code from units.c
+            //(*int) will be pointer for only 4 bytes, and then another * for the adrees value which is data of the file in this address which in this case is *sometimes* addreses itself 
+            //the hex/dec formats array will handle 1/2/4
+            int var = *((int*)(ptr));
+            //end of taken code
+
+            if (display_mode == 1) {
+                printf(dec_formats[unit_size - 1], var);
+            } 
+            else {
+                printf(hex_formats[unit_size - 1], var);
+            }
+            
+            //ptr arithmetic. unsigned char is one bytes so +1 is for one byte but we need to skip the bytes we just printed according to unit size
+            ptr += unit_size;
+        }
+    }
 }
+
+
+
+
 
 void save_into_file() {
     printf("Not implemented yet\n");
