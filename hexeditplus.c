@@ -268,16 +268,13 @@ void save_into_file() {
         //If <target-location> is greater than the size of <file_name> you should print an error message and not copy anything.
         //GO TO THE END TO SEE THE LENTH
         fseek(file, 0, SEEK_END);
-        long file_size = ftell(file); //ftell is the distance from the start in bytes which is file size
+        long file_size = ftell(file); //ftell gets current position. Since we jumped to SEEK_END, this equals the file size.
         
         if (target_location > file_size) {
             fprintf(stderr, "Error: target location is strictly greater than file size\n");
             fclose(file);
             return; 
         }
-
-
-
 
         //we copy from hexeditplus virtual memory(sorce) to file offset(traget with saved file name)
         //seek the specified target location in the file
@@ -290,9 +287,6 @@ void save_into_file() {
     }
     fclose(file);
 }
-
-
-
 
 
 
