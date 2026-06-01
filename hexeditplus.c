@@ -276,7 +276,7 @@ void save_into_file() {
             return; 
         }
 
-        //we copy from hexeditplus virtual memory(sorce) to file offset(traget with saved file name)
+        //we copy from hexeditplus Buffer(sorce) to file offset(traget with saved file name)
         //seek the specified target location in the file
         fseek(file, target_location, SEEK_SET);
 
