@@ -206,7 +206,7 @@ void memory_display() {
             //(*int) will be pointer for only 4 bytes, and then another * for the adrees value which is data of the file in this address which in this case is *sometimes* addreses itself 
             //the hex/dec formats array will handle 1/2/4
             int var = *((int*)(ptr));
-            //end of taken code
+           
 
             if (display_mode == 1) {
                 printf(dec_formats[unit_size - 1], var);
@@ -214,7 +214,7 @@ void memory_display() {
             else {
                 printf(hex_formats[unit_size - 1], var);
             }
-            
+             //end of taken code
             //ptr arithmetic. unsigned char is one bytes so +1 is for one byte but we need to skip the bytes we just printed according to unit size
             ptr += unit_size;
         }

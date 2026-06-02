@@ -1,8 +1,10 @@
-hexeditplus : hexeditplus.o
-	gcc -m32 -g -Wall -o hexeditplus hexeditplus.o
+all : task1 task4
 
-hexeditplus.o : hexeditplus.c
-	gcc -m32 -g -Wall -c -o hexeditplus.o hexeditplus.c
+task1 : task1.o
+	gcc -m32 -g -Wall -o task1 task1.o
+
+task1.o : task1.c
+	gcc -m32 -g -Wall -c -o task1.o task1.c
 
 task4 : task4.o
 	gcc -m32 -g -Wall -fno-pie -fno-stack-protector -o task4 task4.o
@@ -12,4 +14,4 @@ task4.o : task4.c
 
 #clean
 clean :
-	rm -f *.o hexeditplus task4
+	rm -f *.o task1 task4
